@@ -63,6 +63,7 @@ public class codeplayfacebookads extends CordovaPlugin {
 
             String isTesting;
             String bannerid;
+            String bannerSize;
 
             try {
                 bannerid = opts.optString("bannerid");
@@ -82,8 +83,12 @@ public class codeplayfacebookads extends CordovaPlugin {
                 return  false;
             }
 
+            bannerSize = opts.optString("bannerSize");
+
+        
+
             //Banner size set here getBannerAdSize(BANNER SIZE)
-            facebookadView = new AdView(testParameter, bannerid, getBannerAdSize(""));
+            facebookadView = new AdView(testParameter, bannerid, getBannerAdSize(bannerSize));
 
             if(Boolean.parseBoolean(isTesting)) {
                 SharedPreferences adPrefs = cordova.getActivity().getSharedPreferences("FBAdPrefs", 0);
@@ -469,6 +474,10 @@ public class codeplayfacebookads extends CordovaPlugin {
         AdSize sz;
         if("BANNER".equals(str)) {
             sz = AdSize.BANNER_HEIGHT_50;
+            // other size not supported by facebook audience network: FULL_BANNER, MEDIUM_RECTANGLE, LEADERBOARD, SKYSCRAPER
+            //} else if ("SMART_BANNER".equals(str)) {
+        } else if("MEDIUM_RECTANGLE".equals(str)) {
+            sz = AdSize.RECTANGLE_HEIGHT_250;
             // other size not supported by facebook audience network: FULL_BANNER, MEDIUM_RECTANGLE, LEADERBOARD, SKYSCRAPER
             //} else if ("SMART_BANNER".equals(str)) {
         } else {
