@@ -43,6 +43,12 @@ public class codeplayfacebookads extends CordovaPlugin {
     static boolean isInterstitialLoad=false;
     static boolean isRewardVideoLoad=false;
     private RewardedVideoAd rewardedVideoAd;
+
+    // native ad
+    private final String TAG = "NativeAdActivity".getClass().getSimpleName();
+    private NativeAd nativeAd;
+    static boolean isNativeLoad=false;
+
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
 
@@ -251,6 +257,11 @@ public class codeplayfacebookads extends CordovaPlugin {
                 callbackContext.error("First initialize the facebook Video ads '	cordova.plugins.codeplayfacebookads.loadRewardVideoAd(videoid,success,fail);'");
 
             return true;
+        }
+
+        if (action.equals("loadNativeAd")) {
+            
+            nativeAd = new NativeAd(this, "YOUR_PLACEMENT_ID");
         }
 
         return false;
@@ -464,7 +475,52 @@ public class codeplayfacebookads extends CordovaPlugin {
     }
 
 
+    private void facebookNativeAdsLoad(CallbackContext callbackContext){
+        nativeAd.setAdListener(new NativeAdListener() {
+            @Override
+            public void onMediaDownloaded(Ad ad) {
+                // Native ad finished downloading all assets
+                isNativeLoad=false;
+                PluginResult result = new PluginResult(PluginResult.Status.OK, "AdMediaDownloaded");				
+				result.setKeepCallback(true);
+				callbackContext.sendPluginResult(result);
+            }
 
+            @Override
+            public void onError(Ad ad, AdError adError) {
+            // Native ad failed to load
+                isNativeLoad = false;
+                callbackContext.error("Facebook native Ads failed to load: " + adError.getErrorMessage());
+            }
+
+            @Override
+            public void onAdLoaded(Ad ad) {
+                // Native ad is loaded and ready to be displayed
+				isNativeLoad=true;
+                PluginResult result = new PluginResult(PluginResult.Status.OK, "AdLoaded");				
+				result.setKeepCallback(true);
+				callbackContext.sendPluginResult(result);
+            }
+
+            @Override
+            public void onAdClicked(Ad ad) {
+                // Native ad clicked
+                PluginResult result = new PluginResult(PluginResult.Status.OK, "AdClicked");				
+				result.setKeepCallback(true);
+				callbackContext.sendPluginResult(result);
+            }
+
+            @Override
+            public void onLoggingImpression(Ad ad) {
+                // Native ad impression
+                PluginResult result = new PluginResult(PluginResult.Status.OK, "AdLogged");
+                result.setKeepCallback(true);
+                callbackContext.sendPluginResult(result);
+            }
+        });
+
+        nativeAd.loadAd();
+    }
 
 
 
