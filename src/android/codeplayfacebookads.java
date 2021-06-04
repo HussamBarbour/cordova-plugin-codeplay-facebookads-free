@@ -315,7 +315,7 @@ public class codeplayfacebookads extends CordovaPlugin {
                 // Rewarded video ad is loaded and ready to be displayed
                 //Log.d(TAG, "Rewarded video ad is loaded and ready to be displayed!");
                 //callbackContext.success("Rewarded video ad is loaded and ready to be displayed!");
-				PluginResult result = new PluginResult(PluginResult.Status.OK, ad);				
+				PluginResult result = new PluginResult(PluginResult.Status.OK, "AdLoaded");				
 				result.setKeepCallback(true);
 				callbackContext.sendPluginResult(result);
                // rewardedVideoAd.show();
