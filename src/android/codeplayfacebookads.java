@@ -260,8 +260,38 @@ public class codeplayfacebookads extends CordovaPlugin {
         }
 
         if (action.equals("loadNativeAd")) {
-            
-            nativeAd = new NativeAd(this, "YOUR_PLACEMENT_ID");
+            String isTesting;
+            String nativeid;
+
+            try {
+                nativeid = opts.optString("nativeid");
+            }
+            catch (NullPointerException e)
+            {
+                callbackContext.error("Please pass the nativeid");
+                return  false;
+            }
+
+            try {
+                isTesting = opts.optString("isTesting");
+            }
+            catch(NullPointerException e)
+            {
+                callbackContext.error("Please pass isTesting value");
+                return  false;
+            }
+
+            nativeAd = new NativeAd(testParameter, nativeid);
+
+            if(Boolean.parseBoolean(isTesting)) {
+                SharedPreferences adPrefs = cordova.getActivity().getSharedPreferences("FBAdPrefs", 0);
+                String deviceIdHash = adPrefs.getString("deviceIdHash", (String) null);
+                AdSettings.addTestDevice(deviceIdHash);
+            }
+
+            facebookNativeAdsLoad(callbackContext);
+
+            return true;
         }
 
         return false;
