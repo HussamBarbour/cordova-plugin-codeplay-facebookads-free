@@ -24,3 +24,7 @@ exports.loadRewardVideoAd = function (arg0,success, error) {
 exports.showRewardVideoAd = function (success, error) {
     exec(success, error, 'codeplayfacebookads', 'showRewardVideoAd',[""]);
 };
+
+exports.loadNativeAd = function (arg0, success, error) {
+    exec(success, error, 'codeplayfacebookads', 'loadNativeAd', [arg0]);
+};
